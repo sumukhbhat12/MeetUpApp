@@ -1,12 +1,16 @@
 package com.example.exposysdatalabproject;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,30 +19,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView username = findViewById(R.id.username);
+        TextView email = findViewById(R.id.email);
         TextView password = findViewById(R.id.password);
 
         Button loginbtn = findViewById(R.id.loginbtn);
-
-        //admin and admin
+        FirebaseAuth fauth = FirebaseAuth.getInstance();
+        ProgressBar pbar = findViewById(R.id.pbar);
 
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(username.getText().toString().equals("admin") && (password.getText().toString().equals("admin")))
+                //implementing login validation
+
+                String em = email.getText().toString().trim();
+                String pass = password.getText().toString().trim();
+
+                if(TextUtils.isEmpty(em))
                 {
-                    //correct
-                    Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
+                    email.setError("Enter an Email!");
+                    return;
                 }
-                else
+                if(TextUtils.isEmpty(pass))
                 {
-                    //incorrect
-                    Toast.makeText(MainActivity.this,"LOGIN FAILED!",Toast.LENGTH_SHORT).show();
+                    password.setError("Enter a password!");
+                    return;
                 }
+                if(pass.length()<6)
+                {
+                    password.setError("password must be at least 6 characters");
+                    return;
+                }
+                pbar.setVisibility(View.VISIBLE);
             }
         });
 
-        //REDIRECT TO REGISTER PAGE ON CLICKING REGISTER
+        //Redirect to Register page on clicking REGISTER
 
         TextView register = findViewById(R.id.registerhere);
         register.setOnClickListener(new View.OnClickListener() {
