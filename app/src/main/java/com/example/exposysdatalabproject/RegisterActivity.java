@@ -1,6 +1,8 @@
 package com.example.exposysdatalabproject;
 
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,7 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -27,7 +33,12 @@ public class RegisterActivity extends AppCompatActivity {
         ProgressBar pbar = findViewById(R.id.pbar2);
         TextView username = findViewById(R.id.username2);
 
-
+        if(fauth.getCurrentUser()!=null)
+        {
+            //redirect to the next activity
+            startActivity(new Intent(RegisterActivity.this,MainMainActivity.class));
+            finish();
+        }
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,9 +78,30 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
                 pbar.setVisibility(View.VISIBLE);
+
+                //Register the user in firebase
+
+                fauth.createUserWithEmailAndPassword(em,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful())
+                        {
+                            Toast.makeText(RegisterActivity.this, "Account created Successfully", Toast.LENGTH_SHORT).show();
+                            //redirect to next activity
+                            startActivity(new Intent(RegisterActivity.this,MainMainActivity.class));
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(RegisterActivity.this, "Error! "+ task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            pbar.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
             }
         });
 
+        //Redirect to Log in Page
         TextView alreadyhave = findViewById(R.id.alreadyhaveanaccount);
         alreadyhave.setOnClickListener(new View.OnClickListener() {
             @Override
