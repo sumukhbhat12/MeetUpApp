@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -16,8 +17,11 @@ public class MainMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_main);
-
+        FirebaseAuth fauth = FirebaseAuth.getInstance();
         Button logout = findViewById(R.id.logoutbtn);
+        TextView username = findViewById(R.id.usernamemain);
+
+        username.setText(fauth.getCurrentUser().getEmail().toString());
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

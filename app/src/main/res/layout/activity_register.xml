@@ -154,6 +154,7 @@
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/googlelogin2"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="10dp"

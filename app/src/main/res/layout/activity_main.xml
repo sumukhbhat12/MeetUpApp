@@ -147,18 +147,21 @@
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/googlelogin"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="10dp"
             android:src="@drawable/google" />
 
         <ImageView
+            android:id="@+id/facebooklogin"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="10dp"
             android:src="@drawable/facebook" />
 
         <ImageView
+            android:id="@+id/twitterlogin"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="10dp"

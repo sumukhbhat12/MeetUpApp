@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "558095086306-oki6o51kqev5ji84f5lttosb9q7t5i0o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.exposysdatalabproject",
+            "certificate_hash": "b38bcb3cec297008724cca5f8fe2a7075f4dbc37"
+          }
+        },
+        {
           "client_id": "558095086306-bjuoqham437smhh7n8520oigr08mkfis.apps.googleusercontent.com",
           "client_type": 3
         }
