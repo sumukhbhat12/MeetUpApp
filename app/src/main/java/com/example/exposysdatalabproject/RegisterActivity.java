@@ -26,9 +26,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -50,12 +52,13 @@ public class RegisterActivity extends AppCompatActivity {
         TextView username = findViewById(R.id.username2);
         ImageView google = findViewById(R.id.googlelogin2);
 
-        if(fauth.getCurrentUser()!=null)
-        {
+        if (fauth.getCurrentUser() != null) {
             //redirect to the next activity
-            startActivity(new Intent(RegisterActivity.this,MainMainActivity.class));
+            startActivity(new Intent(RegisterActivity.this, MainMainActivity.class));
             finish();
         }
+
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,34 +66,27 @@ public class RegisterActivity extends AppCompatActivity {
                 String pass = password.getText().toString().trim();
                 String user = username.getText().toString().trim();
                 String confpass = confirmpassword.getText().toString().trim();
-
-                if(TextUtils.isEmpty(em))
-                {
+                if (TextUtils.isEmpty(em)) {
                     email.setError("Enter an Email!");
                     return;
                 }
-                if(TextUtils.isEmpty(user))
-                {
+                if (TextUtils.isEmpty(user)) {
                     username.setError("Enter a username!");
                     return;
                 }
-                if(TextUtils.isEmpty(pass))
-                {
+                if (TextUtils.isEmpty(pass)) {
                     password.setError("Enter a password!");
                     return;
                 }
-                if(pass.length()<6)
-                {
+                if (pass.length() < 6) {
                     password.setError("password must be at least 6 characters");
                     return;
                 }
-                if(TextUtils.isEmpty(confpass))
-                {
+                if (TextUtils.isEmpty(confpass)) {
                     confirmpassword.setError("Enter the password again!");
                     return;
                 }
-                if(!pass.equals(confpass))
-                {
+                if (!pass.equals(confpass)) {
                     confirmpassword.setError("password & confirm password do not match");
                     return;
                 }
@@ -98,19 +94,23 @@ public class RegisterActivity extends AppCompatActivity {
 
                 //Register the user in firebase
 
-                fauth.createUserWithEmailAndPassword(em,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+               fauth.createUserWithEmailAndPassword(em, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful())
-                        {
-                            Toast.makeText(RegisterActivity.this, "Account created Successfully", Toast.LENGTH_SHORT).show();
+                        if (task.isSuccessful()) {
+
+                            //verify email before creating the account
+
+                            sendVerificationEmail();
+
                             //redirect to next activity
-                            startActivity(new Intent(RegisterActivity.this,MainMainActivity.class));
+
+                            startActivity(new Intent(RegisterActivity.this, MainMainActivity.class));
+                            pbar.setVisibility(View.INVISIBLE);
                             finish();
-                        }
-                        else
-                        {
-                            Toast.makeText(RegisterActivity.this, "Error! "+ task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             pbar.setVisibility(View.INVISIBLE);
                         }
                     }
@@ -118,12 +118,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+
         //Redirect to Log in Page
         TextView alreadyhave = findViewById(R.id.alreadyhaveanaccount);
         alreadyhave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(RegisterActivity.this,MainActivity.class));
+                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
             }
         });
 
@@ -160,6 +161,35 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    //Send Verification Email
+
+    private void sendVerificationEmail()
+    {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user!=null)
+        {
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                    {
+                        Toast.makeText(RegisterActivity.this, "Email Sent", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(RegisterActivity.this, "Email not sent!" + task.getException(), Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+        }
+    }
+
+
+    //Google Sign In API code
+
 
     private void createRequest() {
         // Configure Google Sign In
