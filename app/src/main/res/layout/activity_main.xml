@@ -80,7 +80,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
         android:backgroundTint="#00FFFFFF"
-        android:text="forgot password"
+        android:text="Forgot Password?"
         android:textColor="@color/white" />
 
     <LinearLayout
@@ -88,7 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/forgotpass"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="10dp"
         android:gravity="center">
 
         <TextView
@@ -102,7 +102,6 @@
 
         <TextView
             android:id="@+id/registerhere"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/firsttime"
@@ -111,8 +110,10 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
             android:backgroundTint="#009C27B0"
-            android:text="Register"
-            android:textColor="@color/white" />
+            android:text=" Register"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -123,7 +124,7 @@
         android:layout_below="@+id/firsttime_register"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/others"
@@ -135,7 +136,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
-        android:text="or sign in with"
+        android:text="or Sign in with"
         android:textColor="@color/white" />
 
     <LinearLayout

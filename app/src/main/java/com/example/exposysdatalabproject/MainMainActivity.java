@@ -64,7 +64,6 @@ public class MainMainActivity extends AppCompatActivity {
                                 Toast.makeText(MainMainActivity.this, "Email not sent!" + task.getException(), Toast.LENGTH_SHORT).show();
                             }
 
-                            //checkIfEmailVerified();
                         }
                     });
                 }

@@ -1,5 +1,6 @@
 package com.example.exposysdatalabproject;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.activity.result.ActivityResult;
@@ -7,11 +8,13 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth fauth = FirebaseAuth.getInstance();
         ProgressBar pbar = findViewById(R.id.pbar);
         ImageView google = findViewById(R.id.googlelogin);
+        TextView resetpass = findViewById(R.id.forgotpass);
 
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +135,55 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signIn();
+            }
+        });
+
+
+        //Reset Password
+
+        resetpass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText resetlink = new EditText(view.getContext());
+                AlertDialog.Builder passwordresetdialog = new AlertDialog.Builder(view.getContext());
+                passwordresetdialog.setTitle("Reset Password?");
+                passwordresetdialog.setMessage("Enter the Email to receive a reset password link");
+                passwordresetdialog.setView(resetlink);
+
+                passwordresetdialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Extract the email and send reset link
+                        String mail = resetlink.getText().toString();
+                        if(TextUtils.isEmpty(mail))
+                        {
+                            resetlink.setError("Enter the Email!");
+                        }
+                        else
+                        {
+                            fauth.sendPasswordResetEmail(mail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(view.getContext(), "Password Reset Mail has been sent", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(view.getContext(), "Password Reset Mail was not sent!" + task.getException(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+                passwordresetdialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //close the dialog
+                    }
+                });
+                passwordresetdialog.create().show();
+
             }
         });
     }
