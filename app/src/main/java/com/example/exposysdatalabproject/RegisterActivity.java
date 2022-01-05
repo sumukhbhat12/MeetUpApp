@@ -128,7 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        //Login through google, facebook or twitter
+        //Login through google
 
         //GOOGLE LOGIN/SIGNUP
 

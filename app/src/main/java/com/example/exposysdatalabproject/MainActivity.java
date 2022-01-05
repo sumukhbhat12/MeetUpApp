@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Login through google, facebook or twitter
+        //Login through google
 
         //GOOGLE LOGIN/SIGNUP
 
@@ -183,10 +183,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 passwordresetdialog.create().show();
-
             }
         });
     }
+
+    //Google Api code
 
     private void createRequest() {
         // Configure Google Sign In
