@@ -32,6 +32,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -204,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
         activityResultLauncher.launch(signInIntent);
     }
 
-
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -212,7 +214,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Sign in success
+
+
+                            //Add email and username to Firestore database, if the user is not already added
+                            FirebaseFirestore database = FirebaseFirestore.getInstance();
+                            GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(MainActivity.this);
+                            String user = acc.getDisplayName();
+                            String em = mAuth.getCurrentUser().getEmail();
+                            HashMap<String,Object> data = new HashMap<>();
+                            data.put("email",em);
+                            data.put("username",user);
+                            database.collection("Users").document(em).set(data);
+
+
+                            //redirect to next activity
                             startActivity(new Intent(MainActivity.this,MainMainActivity.class));
                             Toast.makeText(MainActivity.this, "Logged in Successfully!", Toast.LENGTH_SHORT).show();
                             finish();

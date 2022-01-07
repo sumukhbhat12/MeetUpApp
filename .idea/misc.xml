@@ -5,7 +5,9 @@
       <map>
         <entry key="..\:/apps/exposysdatalabproject/app/src/main/res/layout/activity_confirm_email.xml" value="0.3546875" />
         <entry key="..\:/apps/exposysdatalabproject/app/src/main/res/layout/activity_main.xml" value="0.33" />
-        <entry key="..\:/apps/exposysdatalabproject/app/src/main/res/layout/activity_main_main.xml" value="0.3546875" />
+        <entry key="..\:/apps/exposysdatalabproject/app/src/main/res/layout/activity_main_main.xml" value="0.33" />
+        <entry key="..\:/apps/exposysdatalabproject/app/src/main/res/layout/activity_messaging.xml" value="0.3546875" />
+        <entry key="..\:/apps/exposysdatalabproject/app/src/main/res/layout/activity_profile.xml" value="0.3546875" />
         <entry key="..\:/apps/exposysdatalabproject/app/src/main/res/layout/activity_register.xml" value="0.33" />
       </map>
     </option>

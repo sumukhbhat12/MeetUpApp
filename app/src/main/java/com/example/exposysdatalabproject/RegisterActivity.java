@@ -30,6 +30,11 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -48,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         TextView password = findViewById(R.id.password2);
         TextView confirmpassword = findViewById(R.id.confirmpassword2);
         FirebaseAuth fauth = FirebaseAuth.getInstance();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
         ProgressBar pbar = findViewById(R.id.pbar2);
         TextView username = findViewById(R.id.username2);
         ImageView google = findViewById(R.id.googlelogin2);
@@ -100,17 +106,21 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             //verify email before creating the account
-
                             sendVerificationEmail();
 
-                            //redirect to next activity
+                            //store Email and username in Firestore
+                            HashMap<String,Object> data = new HashMap<>();
+                            data.put("email",em);
+                            data.put("username",user);
+                            database.collection("Users").document(em).set(data);
 
+                            //redirect to next activity
                             startActivity(new Intent(RegisterActivity.this, MainMainActivity.class));
                             pbar.setVisibility(View.INVISIBLE);
                             finish();
 
                         } else {
-                            Toast.makeText(RegisterActivity.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegisterActivity.this, "Error! " + task.getException(), Toast.LENGTH_LONG).show();
                             pbar.setVisibility(View.INVISIBLE);
                         }
                     }
@@ -119,7 +129,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
-        //Redirect to Log in Page
+        //Already have an Account? Redirect to Log in Page
         TextView alreadyhave = findViewById(R.id.alreadyhaveanaccount);
         alreadyhave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-
+//END OF ONCREATE method
 
     //Send Verification Email
 
@@ -213,7 +223,21 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Sign in success
+
+
+                            //Add email and username to Firestore database, if the user is not already added
+                            FirebaseFirestore database = FirebaseFirestore.getInstance();
+                            GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(RegisterActivity.this);
+                            String user = acc.getDisplayName();
+                            String em = mAuth.getCurrentUser().getEmail().toString();
+                            HashMap<String,Object> data = new HashMap<>();
+                            data.put("email",em);
+                            data.put("username",user);
+                            database.collection("Users").document(em).set(data);
+
+
+                            //Redirect to next Activity
                             startActivity(new Intent(RegisterActivity.this,MainMainActivity.class));
                             Toast.makeText(RegisterActivity.this, "Logged in Successfully!", Toast.LENGTH_SHORT).show();
                             finish();
