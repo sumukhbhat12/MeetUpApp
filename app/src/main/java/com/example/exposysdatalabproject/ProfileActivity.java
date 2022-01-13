@@ -6,9 +6,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,15 +18,18 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.model.UriLoader;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -33,23 +38,31 @@ import com.squareup.picasso.Picasso;
 public class ProfileActivity extends AppCompatActivity {
 
     ImageView pp;
-    Button ppbtn;
+    Button ppbtn,logout;
     ActivityResultLauncher<Intent> activityResultLauncher;
     StorageReference storageReference;
     FirebaseAuth fauth;
+    FirebaseUser user;
+    TextView username,verify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        pp = findViewById(R.id.profilepic);
-        ppbtn = findViewById(R.id.ppuploadbtn);
-
-
         //Firebase
         storageReference = FirebaseStorage.getInstance().getReference();
         fauth = FirebaseAuth.getInstance();
+        user = fauth.getCurrentUser();
+
+        pp = findViewById(R.id.profilepic);
+        ppbtn = findViewById(R.id.ppuploadbtn);
+        username = findViewById(R.id.usermailprofile);
+        String email = user.getEmail();
+        logout = findViewById(R.id.logoutbtn);
+        verify = findViewById(R.id.verificationtext);
+
+
         StorageReference profileref = storageReference.child("Users/"+fauth.getCurrentUser().getUid()+"/profilepic.jpg");
 
         //Profile pic is there by default and no need to upload everytime
@@ -90,6 +103,74 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+
+
+        //Show Email of the user below the profile picture
+        username.setText(email);
+
+        //Log out button at the top
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder logoutdialog = new AlertDialog.Builder(view.getContext());
+                logoutdialog.setTitle("Log out?");
+                logoutdialog.setMessage("Are you sure you want to log out?");
+
+                logoutdialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        GoogleSignIn.getClient(ProfileActivity.this,new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()).signOut();
+                        fauth.signOut();
+                        //redirect to log in activity
+                        startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+                        finish();
+                    }
+                });
+
+                logoutdialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //nothing
+                    }
+                });
+
+                logoutdialog.create().show();
+
+            }
+        });
+
+
+
+        if(!user.isEmailVerified())
+        {
+            verify.setVisibility(View.VISIBLE);
+            verify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    //Send the Verification Email
+
+                    user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
+                            {
+                                Toast.makeText(ProfileActivity.this, "Email Sent", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(ProfileActivity.this, "Email not sent!" + task.getException(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+                }
+            });
+        }
+
+
     }
 
     //Upload the profile picture to Firebase storage

@@ -35,4 +35,40 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.213" />
 
+    <TextView
+        android:id="@+id/usermailprofile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilepic" />
+
+    <TextView
+        android:id="@+id/verificationtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="email is not verified(click)"
+        android:textColor="?attr/colorError"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usermailprofile" />
+
+    <Button
+        android:id="@+id/logoutbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#9C27B0"
+        android:drawableLeft="@drawable/ic_baseline_logout"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
